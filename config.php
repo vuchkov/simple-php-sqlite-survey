@@ -141,8 +141,8 @@ class Page {
         $this->page = file_exists('template.html')
             ? file_get_contents('template.html')
             : '';
-        $this->page = str_replace('{title}', $title, $this->page);
-        $this->page = str_replace('{content}', $content, $this->page);
+        $this->page = str_replace('{{ title }}', $title, $this->page);
+        $this->page = str_replace('{{ content }}', $content, $this->page);
     }
 
     public function render(): void {
