@@ -13,13 +13,13 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && !empty($_POST['email'])) {
     if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $db = new DB();
         if (($_SESSION['user_id'] = $db->getUser($email)))
-            $body = 'You are successfully logged in!';
+            $body = 'You are successfully logged in! <a href="/">Go to Homepage</a>';
         elseif ($_SESSION['user_id'] = $db->setUser($email))
-            $body = 'You are successfully authorized!';
+            $body = 'You are successfully authorized! <a href="/">Go to Homepage</a>';
         else unset($_SESSION['user_id']);
     }
     else {
-        $body = 'Please enter a valid email address!<br><br><a href="/auth.php">Try again</a>';
+        $body = 'Please enter a valid email address! <a href="/auth.php">Try again</a>';
     }
 }
 else {
