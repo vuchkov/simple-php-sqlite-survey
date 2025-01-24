@@ -9,18 +9,19 @@ include_once 'config.php';
 $db = new DB();
 
 $users = $db->users();
-$body = '<h2>Users ('.(!empty($users) ? count($users) : '0').') | ';
-
+$body = '<br><h3>Users ('.(!empty($users) ? count($users) : '0').')';
 $polls = $db->polls();
-$body .= 'Polls ('.(!empty($polls) ? count($polls) : '0').') | ';
+$body .= ' | Polls ('.(!empty($polls) ? count($polls) : '0').')';
+//$votes = $db->votes();
+//$body .= ' | Votes ('.(!empty($votes) ? count($votes) : '0').')';
+$body .= '</h3>';
 
-$votes = $db->votes();
-$body .= 'Votes ('.(!empty($votes) ? count($votes) : '0').')</h2>';
-
-$body .= '<a href="/add.php" class="btn btn-primary">+ Create a Poll</a>';
+$body .= '<br><a href="/add.php" class="btn btn-primary">+ Create a Poll</a><br>';
 if (!empty($polls))
     foreach ($polls as $poll) {
-        $body .= '<br>'.$poll['id'].' | <a href="vote-poll.php?id='.$poll['id'].'">'.$poll['question'].'</a><br>';
+        $poll_votes = $db->getVotes($poll['id']) ?: 0;
+        var_dump($poll_votes);
+        $body .= '<br><a href="poll.php?id='.$poll['id'].'">'.$poll['question'].'</a> ('.$poll_votes.')<br>';
     }
 
 $page = new Page('Survey', $body);

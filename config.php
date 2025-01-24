@@ -119,15 +119,15 @@ class Db {
     }
 
     public function getVotes($poll_id) {
-        $stmt = $this->conn->prepare("SELECT COUNT(id) FROM polls WHERE poll_id=:poll_id");
+        $stmt = $this->conn->prepare("SELECT COUNT(id) FROM votes WHERE poll_id=:poll_id");
         $stmt->bindParam(':poll_id', $poll_id);
         $stmt->execute();
-        $votes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $votes;
+        $votes = $stmt->fetch(PDO::FETCH_NUM);
+        return $votes[0];
     }
 
-    public function votes($poll_id): array|null {
-        $stmt = $this->conn->prepare("SELECT * FROM votes WHERE poll_id=:poll_id");
+    public function votes($poll_id = NULL): array|null {
+        $stmt = $this->conn->prepare("SELECT * FROM votes  WHERE poll_id=:poll_id");
         $stmt->bindParam(':poll_id', $poll_id);
         $stmt->execute();
         $votes = $stmt->fetchAll(PDO::FETCH_ASSOC);
