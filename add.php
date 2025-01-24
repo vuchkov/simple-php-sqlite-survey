@@ -1,6 +1,10 @@
 <?php
-include_once 'config.php';
+if (empty($_SESSION['user_id'])) {
+    header('Location: /');
+    exit;
+}
 
+include_once 'config.php';
 $title = 'Create a Poll';
 
 if (($_SERVER['REQUEST_METHOD'] === 'POST') && !empty($question = trim($_POST['question'])) && !empty($_POST['answers'])) {
@@ -28,10 +32,9 @@ else {
             .answers-container { margin-top: 10px; }
             .answer-field { margin-bottom: 5px; }
         </style>
-        <form action="/add.php" method="post" class="">
+        <form action="/add.php" method="post">
             <label for="question">Poll Question:</label><br>
             <input type="text" id="question" name="question" required><br><br>
-        
             <div id="answers-container" class="answers-container">
                 <label>Answers:</label><br>
                 <input type="text" name="answers[]" placeholder="Enter an answer" class="answer-field"><br>

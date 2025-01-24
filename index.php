@@ -20,7 +20,6 @@ $body .= '<br><a href="/add.php" class="btn btn-primary">+ Create a Poll</a><br>
 if (!empty($polls))
     foreach ($polls as $poll) {
         $poll_votes = $db->getVotes($poll['id']) ?: 0;
-        var_dump($poll_votes);
         $body .= '<br><a href="poll.php?id='.$poll['id'].'">'.$poll['question'].'</a> ('.$poll_votes.')<br>';
     }
 

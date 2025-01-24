@@ -73,7 +73,7 @@ class Db {
         $stmt = $this->conn->prepare("SELECT * FROM answers WHERE poll_id=:poll_id");
         $stmt->bindParam(':poll_id', $pollid);
         $stmt->execute();
-        $answers = $stmt->fetch(PDO::FETCH_ASSOC);
+        $answers = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $answers ?: [];
     }
 
