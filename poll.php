@@ -11,10 +11,7 @@ include_once 'config.php';
 $title = 'Survey';
 $html = <<<EOT
     <div style="text-align:left;">
-        <form id="pollForm">
-            {{ answers }}
-            <button type="button" onclick="submitPoll()" class="btn btn-primary">Vote</button>
-        </form>
+        {{ pollForm }}
         <br><br>
         <h2>Results</h2>
         <div id="results">Loading...</div>
@@ -22,13 +19,13 @@ $html = <<<EOT
     <script>
         // Fetch and display poll results
         async function fetchResults() {
-            const response = await fetch('api.php');
-            const results = await response.json();
             const resultsDiv = document.getElementById('results');
-            const question = document.getElementById('question');
-            resultsDiv.innerHTML = '<p><b>Question:</b> ' + question.value + '</p>';
+            const pollId = document.getElementById('id');
+            const response = await fetch('api.php?id=' + pollId.value);
+            const results = await response.json();
+            resultsDiv.innerHTML = '';
             for (const [answer, votes] of Object.entries(results)) {
-                resultsDiv.innerHTML += '<p>&bull; ' + answer + ' (' + votes +' votes)</p>';
+                resultsDiv.innerHTML += '<p>&bull; <b>' + answer + '</b> (' + votes +' votes)</p>';
             }
         }
     
@@ -61,16 +58,25 @@ if (empty($poll) || empty($answers)) {
     $html = 'There are no poll or poll\'s answers.';
 }
 else {
-    $title = $poll; $body = '';
-    foreach ($answers as $answer) {
-        $body .= '<div class="mb-3"><div class="form-check">
-                      <input name="answer" type="radio" value="'.$answer['id'].'" class="form-check-input" checked="" required="">
-                      <label class="form-check-label" for="answer">'.$answer['answer'].'</label>
-                  </div></div>';
+    $title = $poll;
+    if (empty($db->getVote($_SESSION['user_id'], $id))) {
+        $body = '<form id="pollForm">
+                  <div class="mb-3">';
+        foreach ($answers as $answer) {
+            $body .= '<div class="form-check">
+                      <input name="answer" type="radio" value="' . $answer['id'] . '" class="form-check-input" checked="" required="">
+                      <label class="form-check-label" for="answer">' . $answer['answer'] . '</label>
+                  </div>';
+        }
+        $body .= '</div>
+              <input type="hidden" id="id" name="id" value="' . $id . '">
+              <input type="hidden" id="question" name="question" value="' . $poll . '">
+              <input type="hidden" id="user_id" name="user_id" value="' . $_SESSION['user_id'] . '">
+              <button type="button" onclick="submitPoll()" class="btn btn-primary">Vote</button>
+          </form>';
     }
-    $body .= '<input type="hidden" id="id" name="id" value="' . $id . '">';
-    $body .= '<input type="hidden" id="question" name="question" value="' . $poll . '">';
-    $html = str_replace('{{ answers }}', $body, $html);
+    else $body = '<input type="hidden" id="id" name="id" value="' . $id . '">';
+    $html = str_replace('{{ pollForm }}', $body, $html);
 }
 
 $page = new Page($title, $html);

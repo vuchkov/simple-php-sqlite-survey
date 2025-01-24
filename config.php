@@ -126,12 +126,19 @@ class Db {
         return $votes[0];
     }
 
-    public function votes($poll_id = NULL): array|null {
-        $stmt = $this->conn->prepare("SELECT * FROM votes  WHERE poll_id=:poll_id");
+    public function votes($poll_id, $answers): array {
+        $res = [];
+        foreach ($answers as $answer) {
+            $res[$answer['id']] = [$answer['answer'], 0];
+        }
+        $stmt = $this->conn->prepare("SELECT * FROM votes WHERE poll_id=:poll_id");
         $stmt->bindParam(':poll_id', $poll_id);
         $stmt->execute();
         $votes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $votes ?: NULL;
+        foreach ($votes as $vote) {
+            $res[$vote['answer_id']][1] = $res[$vote['answer_id']][1] + 1;
+        }
+        return $res;
     }
 }
 

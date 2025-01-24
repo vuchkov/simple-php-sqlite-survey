@@ -12,8 +12,6 @@ $users = $db->users();
 $body = '<br><h3>Users ('.(!empty($users) ? count($users) : '0').')';
 $polls = $db->polls();
 $body .= ' | Polls ('.(!empty($polls) ? count($polls) : '0').')';
-//$votes = $db->votes();
-//$body .= ' | Votes ('.(!empty($votes) ? count($votes) : '0').')';
 $body .= '</h3>';
 
 $body .= '<br><a href="/add.php" class="btn btn-primary">+ Create a Poll</a><br>';
