@@ -62,7 +62,7 @@ class Db {
         return $poll['question'] ?: NULL;
     }
 
-    public function setPoll($question) {
+    public function setPoll($question): false|string {
         $stmt = $this->conn->prepare("INSERT INTO polls (question) VALUES (:question)");
         $stmt->bindParam(':question', $question);
         $stmt->execute();
@@ -93,6 +93,13 @@ class Db {
         return $polls ?: NULL;
     }
 
+    public function getLatestPoll() {
+        $stmt = $this->conn->prepare("SELECT * FROM polls ORDER BY id DESC LIMIT 1");
+        $stmt->execute();
+        $poll = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $poll ?: NULL;
+    }
+
     public function getVote($user_id, $poll_id) {
         $stmt = $this->conn->prepare("SELECT * FROM votes WHERE user_id=:user_id AND poll_id=:poll_id");
         $stmt->bindParam(':user_id', $user_id);
@@ -119,16 +126,9 @@ class Db {
         return $votes;
     }
 
-    public function getLatestPoll() {
-        $stmt = $this->conn->prepare("SELECT COUNT(id) FROM polls WHERE poll_id=:poll_id");
+    public function votes($poll_id): array|null {
+        $stmt = $this->conn->prepare("SELECT * FROM votes WHERE poll_id=:poll_id");
         $stmt->bindParam(':poll_id', $poll_id);
-        $stmt->execute();
-        $votes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $votes;
-    }
-
-    public function votes(): array|null {
-        $stmt = $this->conn->prepare("SELECT * FROM votes");
         $stmt->execute();
         $votes = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $votes ?: NULL;
