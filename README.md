@@ -9,3 +9,4 @@
 - Currently, the Authorization in `auth.php` is by the user email (only) 
 but can be easily extended with IP, user device/data, session, cookie, 
 email confirmation, phone confirmation, etc.
+- Already in use vanilla JS async & await fetch & Restful API with JSON data.
