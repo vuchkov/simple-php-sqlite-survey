@@ -25,9 +25,10 @@ $html = <<<EOT
             const response = await fetch('api.php');
             const results = await response.json();
             const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '';
+            const question = document.getElementById('question');
+            resultsDiv.innerHTML = '<p><b>Question:</b> ' + question.value + '</p>';
             for (const [answer, votes] of Object.entries(results)) {
-                resultsDiv.innerHTML += '<p>' + votes +' votes</p>';
+                resultsDiv.innerHTML += '<p>&bull; ' + answer + ' (' + votes +' votes)</p>';
             }
         }
     
@@ -66,8 +67,9 @@ else {
                       <input name="answer" type="radio" value="'.$answer['id'].'" class="form-check-input" checked="" required="">
                       <label class="form-check-label" for="answer">'.$answer['answer'].'</label>
                   </div></div>';
-    //'<label><input type="radio" name="answer" value="'.$answer['id'].'">'.$answer['answer'].'</label><br>';
     }
+    $body .= '<input type="hidden" id="id" name="id" value="' . $id . '">';
+    $body .= '<input type="hidden" id="question" name="question" value="' . $poll . '">';
     $html = str_replace('{{ answers }}', $body, $html);
 }
 
